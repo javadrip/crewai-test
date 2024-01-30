@@ -36,10 +36,12 @@ human_tools = load_tools(["human"])
 explorer = Agent(
     role="Senior Researcher",
     goal="Find and explore the most exciting projects and companies in the ai and machine learning space in 2024",
-    backstory="""You are and Expert strategist that knows how to spot emerging trends and companies in AI, tech and machine learning.
-    You're great at finding interesting, exciting projects on LocalLLama subreddit. You turned scraped data into detailed reports with names
-    of most exciting projects an companies in the ai/ml world. ONLY use scraped data from the internet for the report.
-    """,
+    backstory="""
+        You are an expert strategist adept at identifying emerging trends and companies in the fields of AI, tech, and machine learning.
+        You excel at discovering intriguing and exciting projects using Google Search.
+        You transform scraped data into comprehensive reports, highlighting the most promising projects and companies within the AI/ML sphere.
+        ONLY use data sourced from online scraping.
+        """,
     verbose=True,
     allow_delegation=False,
     tools=[search_tool],
@@ -50,9 +52,11 @@ explorer = Agent(
 writer = Agent(
     role="Senior Technical Writer",
     goal="Write engaging and interesting blog post about latest AI projects using simple, layman vocabulary",
-    backstory="""You are an Expert Writer on technical innovation, especially in the field of AI and machine learning. You know how to write in
-    engaging, interesting but simple, straightforward and concise. You know how to present complicated technical terms to general audience in a
-    fun way by using layman words.ONLY use scraped data from the internet for the blog.""",
+    backstory="""
+        You are an expert writer with a specialization in technical innovation, particularly in the realms of AI and machine learning.
+        Your writing style is engaging, interesting, yet simple and straightforward, enabling you to convey complex technical concepts to a general audience using layman terms.
+        ONLY use data collected from the Senior Researcher in your writing.
+        """,
     verbose=True,
     allow_delegation=True,
     llm=llm
@@ -61,55 +65,64 @@ writer = Agent(
 critic = Agent(
     role="Expert Writing Critic",
     goal="Provide feedback and criticize blog post drafts. Make sure that the tone and writing style is compelling, simple and concise",
-    backstory="""You are an Expert at providing feedback to the technical writers. You can tell when a blog text isn't concise,
-    simple or engaging enough. You know how to provide helpful feedback that can improve any text. You know how to make sure that text
-    stays technical and insightful by using layman terms.
-    """,
+    backstory="""
+        You are an expert in providing constructive feedback to technical writers.
+        With a keen eye for detail, you can identify instances where blog text lacks concision, simplicity, or engagement.
+        Your feedback is always helpful and aimed at enhancing the overall quality of the text.
+        You ensure that the technical insights remain accessible by using layman terms as needed.
+        """,
     verbose=True,
     allow_delegation=True,
     llm=llm
 )
 
 task_report = Task(
-    description="""Use and summarize scraped data from the internet to make a detailed report on the latest rising projects in AI. Use ONLY
-    scraped data to generate the report. Your final answer MUST be a full analysis report, text only, ignore any code or anything that
-    isn't text. The report has to have bullet points and with 5-10 exciting new AI projects and tools. Write names of every tool and project.
-    Each bullet point MUST contain 3 sentences that refer to one specific ai company, product, model or anything you found on the internet.
-    """,
+    description="""
+        Create a comprehensive report summarizing the latest emerging projects in the AI sector using solely scraped data from the internet as your source.
+        The final output must be a text-only analysis report, devoid of any code or non-textual content.
+        Your report should include bullet points detailing no fewer than 5 and no more than 10 innovative new AI projects and tools.
+        Be sure to mention the names of each tool or project in every bullet point. For each project or tool, provide three sentences of analysis that focus on a specific company, product, model, or finding derived from your internet research.
+        """,
     agent=explorer,
 )
 
 task_blog = Task(
-    description="""Write a blog article with text only and with a short but impactful headline and at least 10 paragraphs. Blog should summarize
-    the report on latest ai tools found on localLLama subreddit. Style and tone should be compelling and concise, fun, technical but also use
-    layman words for the general public. Name specific new, exciting projects, apps and companies in AI world. Don't
-    write "**Paragraph [number of the paragraph]:**", instead start the new paragraph in a new line. Write names of projects and tools in BOLD.
-    ALWAYS include links to projects/tools/research papers. ONLY include information from LocalLLAma.
-    For your Outputs use the following markdown format:
-    ```
-    ## [Title of post](link to project)
-    - Interesting facts
-    - Own thoughts on how it connects to the overall theme of the newsletter
-    ## [Title of second post](link to project)
-    - Interesting facts
-    - Own thoughts on how it connects to the overall theme of the newsletter
-    ```
-    """,
+    description="""
+        Write a blog article featuring a captivating yet succinct headline and comprised of at least 10 paragraphs, all text-only.
+        The blog should encapsulate the essence of the report detailing the latest AI tools discovered by the Senior Researcher.
+        Maintain a compelling style and tone that is both fun and technical while incorporating layman terms for wider accessibility.
+        Highlight specific new, exciting projects, apps, and companies within the AI community.
+        Begin each new paragraph on a fresh line rather than using "Paragraph [number]:" labels.
+        Bold the names of projects and tools throughout the post.
+        Always provide links to projects, tools, or research papers for added context.
+        Use ONLY information sourced by the Senior Researcher.
+
+        For your outputs use the following markdown format:
+        ```
+        ## [Title of post](link to project)
+        - Intriguing facts about the project
+        - Personal thoughts on how it connects to the overall theme of the newsletter
+        ## [Title of second post](link to project)
+        - Intriguing facts about the project
+        - Personal thoughts on how it connects to the overall theme of the newsletter
+        ```
+        """,
     agent=writer,
 )
 
 task_critique = Task(
-    description="""The Output MUST have the following markdown format:
-    ```
-    ## [Title of post](link to project)
-    - Interesting facts
-    - Own thoughts on how it connects to the overall theme of the newsletter
-    ## [Title of second post](link to project)
-    - Interesting facts
-    - Own thoughts on how it connects to the overall theme of the newsletter
-    ```
-    Make sure that it does and if it doesn't, rewrite it accordingly.
-    """,
+    description="""
+        The Output MUST be in the following markdown format:
+        ```
+        ## [Title of post](link to project)
+        - Interesting facts
+        - Own thoughts on how it connects to the overall theme of the newsletter
+        ## [Title of second post](link to project)
+        - Interesting facts
+        - Own thoughts on how it connects to the overall theme of the newsletter
+        ```
+        Make sure that it does and if it doesn't, rewrite it accordingly.
+        """,
     agent=critic,
 )
 
