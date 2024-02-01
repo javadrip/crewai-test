@@ -6,3 +6,6 @@ crewai_env/
 
 # Ignore .env file
 .env
+
+# Ignore Python cache
+__pycache__/
