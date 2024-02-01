@@ -1,3 +1,5 @@
+# NOTE: Remember to start the LLM server before running this script.
+
 import os
 # pip install python-dotenv
 from dotenv import load_dotenv
@@ -6,6 +8,7 @@ from langchain.llms.openai import OpenAI
 from langchain.agents import Tool
 from langchain.agents import load_tools
 from langchain_community.utilities import SerpAPIWrapper
+from reader import SimpleReaderTool
 
 load_dotenv()
 
@@ -16,12 +19,21 @@ llm = OpenAI(base_url="http://localhost:1234/v1", api_key="not-needed")
 api_serp = os.environ.get("SERPAPI_API_KEY")
 os.environ["SERPAPI_API_KEY"] = api_serp
 
+# Initialise SerpAPIWrapper
 search = SerpAPIWrapper()
 
 search_tool = Tool(
     name="Scrape google searches",
     func=search.run,
     description="useful for when you need to ask the agent to search the internet",
+)
+
+reader = SimpleReaderTool()
+
+reader_tool = Tool(
+    name="Read a webpage",
+    func=reader.run,
+    description="useful for when you need to ask the agent to read a webpage",
 )
 
 # Loading Human Tools
@@ -38,13 +50,13 @@ explorer = Agent(
     goal="Find and explore the most exciting projects and companies in the ai and machine learning space in 2024",
     backstory="""
         You are an expert strategist adept at identifying emerging trends and companies in the fields of AI, tech, and machine learning.
-        You excel at discovering intriguing and exciting projects using Google Search.
-        You transform scraped data into comprehensive reports, highlighting the most promising projects and companies within the AI/ML sphere.
-        ONLY use data sourced from online scraping.
+        You excel at discovering intriguing and exciting projects, using Google Search to find authoritative websites and browsing the pages for insights.
+        You transform the insights into comprehensive reports, highlighting the most promising projects and companies within the AI/ML sphere.
+        ONLY use data sourced from online scraping and web browsing.
         """,
     verbose=True,
     allow_delegation=False,
-    tools=[search_tool],
+    tools=[search_tool, reader_tool],
     llm=llm
 
 )
